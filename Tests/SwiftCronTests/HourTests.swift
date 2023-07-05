@@ -6,38 +6,37 @@
 //  Copyright © 2016 Rush42. All rights reserved.
 //
 
-import XCTest
 import SwiftCron
+import XCTest
 
 class HourTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
 
-	override func setUp() {
-		super.setUp()
-		// Put setup code here. This method is called before the invocation of each test method in the class.
-	}
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
 
-	override func tearDown() {
-		// Put teardown code here. This method is called after the invocation of each test method in the class.
-		super.tearDown()
-	}
+    func testEvery11thHour() {
+        let calendar = Calendar.current
 
-	func testEvery11thHour() {
-		let calendar = Calendar.current
+        let dateToTestFrom = TestData.may11
 
-		let dateToTestFrom = TestData.may11
+        var components = calendar.dateComponents([.day, .year, .month, .hour], from: dateToTestFrom)
+        components.hour = 11
+        let expectedDate = calendar.date(from: components)
 
-		var components = calendar.dateComponents([.day, .year, .month, .hour], from: dateToTestFrom)
-		components.hour = 11
-		let expectedDate = calendar.date(from: components)
+        let every11thHourCron = CronExpression(minute: "0", hour: "11")
+        let nextRunDate = every11thHourCron?.getNextRunDate(dateToTestFrom)
 
-		let every11thHourCron = CronExpression(minute: "0", hour: "11")
-		let nextRunDate = every11thHourCron?.getNextRunDate(dateToTestFrom)
-
-		XCTAssertTrue(calendar.isDate(nextRunDate!, equalTo: expectedDate!, toGranularity: .hour))
-	}
+        XCTAssertTrue(calendar.isDate(nextRunDate!, equalTo: expectedDate!, toGranularity: .hour))
+    }
 
     func testEverySecondAndEveryFourthHourOfDay() {
-        let dateToTestFrom = TestData.may15Of2016
+        let dateToTestFrom = DateBuilderTestData.may15Of2016
 
         let everySecondAndFourthHourOfDayCron = CronExpression(minute: "0", hour: "2,4")!
 
@@ -66,5 +65,4 @@ class HourTests: XCTestCase {
         components.minute! += 1
         return calendar.date(from: components)!
     }
-
 }
